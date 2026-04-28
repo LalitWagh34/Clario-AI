@@ -4,13 +4,27 @@ import { streamText ,Output} from 'ai';
 import { createGroq } from '@ai-sdk/groq';
 import {PROMPT_TEMPLATE , SYSTEM_PROMPT } from './prompt' ;
 import z from 'zod'
+import { prisma } from './db';
 const client = tavily({apiKey: process.env.TAVILY_API_KEY});
 const groq = createGroq({apiKey:process.env.GROQ_API_KEY});
 
 console.log("GROQ KEY:", process.env.GROQ_API_KEY ? "loaded ✅" : "missing ❌");
 console.log("TAVILY KEY:", process.env.TAVILY_API_KEY ? "loaded ✅" : "missing ❌");
+
 const app = express()
 app.use(express.json());
+
+
+
+// PAst conversation get
+app.get("/conversation" ,async(req ,res)=>{
+
+})
+// Past convesation Get
+
+app.post("/conversation/:conversationID" , async(req ,res) =>{
+
+})
 
 app.post("/Clario_ask" ,async(req , res)=>{
     try{    
