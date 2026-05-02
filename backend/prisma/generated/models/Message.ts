@@ -363,10 +363,6 @@ export type EnumMessageRoleFieldUpdateOperationsInput = {
   set?: $Enums.MessageRole
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type MessageCreateWithoutConversationInput = {
   id?: string
   content: string

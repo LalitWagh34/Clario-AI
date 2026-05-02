@@ -1,4 +1,4 @@
-import { Send, Loader } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface ChatInputProps {
@@ -12,7 +12,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
 
   const handleSend = () => {
     if (input.trim() && !isLoading) {
-      onSend(input);
+      onSend(input.trim());
       setInput("");
       if (textareaRef.current) {
         textareaRef.current.style.height = "auto";
@@ -30,44 +30,110 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
   const handleInput = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + "px";
+      textareaRef.current.style.height =
+        Math.min(textareaRef.current.scrollHeight, 160) + "px";
     }
   };
 
+  const isEmpty = !input.trim();
+
   return (
-    <div className="w-full p-3 sm:p-4 border-t border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
-      <div className="flex gap-2 sm:gap-3">
-        <div className="flex-1 glass rounded-xl p-2 sm:p-3 flex items-end gap-2">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              handleInput();
-            }}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask me anything... (Shift+Enter for new line)"
-            rows={1}
-            disabled={isLoading}
-            className="flex-1 bg-transparent text-white placeholder-slate-500 resize-none focus:outline-none text-sm"
-            style={{ maxHeight: "120px" }}
-          />
-          <button
-            onClick={handleSend}
-            disabled={isLoading || !input.trim()}
-            className={`p-2 rounded-lg transition-all duration-200 flex items-center justify-center flex-shrink-0 ${
-              isLoading || !input.trim()
-                ? "bg-slate-700/50 text-slate-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-cyan-500 to-purple-500 text-white hover:shadow-lg hover:shadow-cyan-500/50"
-            }`}
-          >
-            {isLoading ? (
-              <Loader size={18} className="animate-spin" />
-            ) : (
-              <Send size={18} />
-            )}
-          </button>
-        </div>
+    <div
+      style={{
+        width: "100%",
+        borderRadius: "16px",
+        border: "1px solid #222",
+        background: "#111",
+        transition: "border-color 0.15s",
+        overflow: "hidden",
+      }}
+      onFocusCapture={(e) => {
+        (e.currentTarget as HTMLElement).style.borderColor = "#333";
+      }}
+      onBlurCapture={(e) => {
+        (e.currentTarget as HTMLElement).style.borderColor = "#222";
+      }}
+    >
+      {/* Textarea */}
+      <div style={{ padding: "14px 16px 0" }}>
+        <textarea
+          ref={textareaRef}
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+            handleInput();
+          }}
+          onKeyDown={handleKeyDown}
+          placeholder="Ask anything..."
+          rows={1}
+          disabled={isLoading}
+          style={{
+            width: "100%",
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            resize: "none",
+            color: "#e0e0e0",
+            fontSize: "15px",
+            lineHeight: "1.6",
+            fontFamily: "'DM Sans', system-ui, sans-serif",
+            maxHeight: "160px",
+            overflowY: "auto",
+          }}
+        />
+        {/* Placeholder style override */}
+        <style>{`
+          textarea::placeholder { color: #3a3a3a; }
+          textarea::-webkit-scrollbar { width: 3px; }
+          textarea::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
+        `}</style>
+      </div>
+
+      {/* Bottom bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 12px",
+        }}
+      >
+        <span style={{ fontSize: "11px", color: "#2e2e2e", letterSpacing: "0.03em" }}>
+          Shift + Enter for new line
+        </span>
+
+        <button
+          onClick={handleSend}
+          disabled={isEmpty && !isLoading}
+          style={{
+            width: "32px",
+            height: "32px",
+            borderRadius: "10px",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: isEmpty && !isLoading ? "not-allowed" : "pointer",
+            background: isLoading
+              ? "rgba(32,178,170,0.1)"
+              : isEmpty
+              ? "#1a1a1a"
+              : "#20b2aa",
+            color: isLoading
+              ? "#20b2aa"
+              : isEmpty
+              ? "#333"
+              : "#fff",
+            transition: "all 0.15s",
+            flexShrink: 0,
+          }}
+        >
+          {isLoading ? (
+            <Square size={12} fill="currentColor" />
+          ) : (
+            <ArrowUp size={15} strokeWidth={2.5} />
+          )}
+        </button>
       </div>
     </div>
   );

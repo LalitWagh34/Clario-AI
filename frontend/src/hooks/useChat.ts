@@ -115,6 +115,12 @@ export function useChat() {
         );
         const conversation = response.data.conversation;
         setCurrentConversation(conversation);
+        const cleanedMessages = (conversation.messages || []).map((m: any) => ({
+        role: m.role === "User" ? "user" : "assistant",
+        content: m.role === "Assistant"
+          ? (parseAnswer(m.content) || m.content)
+          : m.content,
+      }));
         setMessages(conversation.messages || []);
         setError(null);
       } catch (err) {
