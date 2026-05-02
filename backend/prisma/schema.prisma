@@ -29,6 +29,7 @@ model Conversation{
   title     String?
   slug      String
   userId    String
+  createdAt DateTime  @default(now()) 
   messages  Message[]
   user      User   @relation(fields:[userId] , references: [id])
 }
