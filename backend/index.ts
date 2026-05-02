@@ -28,6 +28,11 @@ app.use(cors({
   credentials: true,
 }));
 
+function parseAnswer(raw: string): string {
+  const match = raw.match(/<ANSWER>([\s\S]*?)<\/ANSWER>/);
+  return match ? match[1].trim() : raw;
+}
+
 // PAst conversation get
 app.get("/conversation" ,middleware, async(req ,res)=>{
     try {
@@ -134,7 +139,7 @@ app.post("/Clario_ask",middleware  ,async(req , res)=>{
         messages: {
           create: [
             { role: "User", content: query },
-            { role: "Assistant", content: fullResponse },
+            { role: "Assistant", content:parseAnswer(fullResponse)  },
           ],
         },
       },
