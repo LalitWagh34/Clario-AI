@@ -10,24 +10,20 @@ export async function  middleware(req:Request , res:Response , next:NextFunction
     const userId = data.data.user?.id
     if(userId){
         try{
-            console.log({
-                id:data.data.user!.id,
-                supabaseId:data.data.user!.id,
-                email: data.data.user?.email,
-                provider:data.data.user?.user_metadata.provider === "google"? "Google" :"Github",
-                name :data.data.user?.user_metadata.full_name
-            })
-            await prisma.user.create({
-                data:{
-                    id:data.data.user!.id,
-                    supabaseId:data.data.user!.id,
-                    email: data.data.user?.email,
+            
+            await prisma.user.upsert({
+                where: { supabaseId: userId },
+                update: {},
+                create:{
+                    id:userId,
+                    supabaseId:userId,
+                    email: data.data.user!.email,
                     provider:data.data.user?.user_metadata.provider === "google"? "Google" :"Github",
                     name :data.data.user?.user_metadata.full_name
                 }
             })
         }catch(e){
-            console.log(e)
+            console.log("Middleware DB error: " ,e)
         }
         
         req.userId = userId;
